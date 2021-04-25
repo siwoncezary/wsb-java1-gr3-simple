@@ -15,14 +15,61 @@ public class InnerPanel {
             this.unitPrice = unitPrice;
         }
     }
+    //interfejs wymuszania wywołania metody width w builderze
+    interface RequireWidth{
+        RequireHeight width(double val);
+    }
+    //interfejs wymuszania wywołania metody height w builderze, po tej metodzie można już ewentualnie
+    //budować metodą build()
+    interface RequireHeight{
+        Builder height(double val);
+    }
 
-    public static class Builder{
+    //metoda zwraca buildera jako referencję do interfejsu, co powouje, że można wywołać tylko
+    // metodę width
+    public static RequireWidth builder(){
+        return new Builder();
+    }
+
+    public static class Builder implements RequireWidth, RequireHeight{
+        //pole obowiązkowe
         private double width;
+        //pole obowiązkowe
         private double height;
+        //pola opcjonalne
         private int unitPrice;
         private Border border;
+
         public Builder(){
         }
+
+        public Builder width(double val){
+            this.width = val;
+            return this;
+        }
+        public Builder height(double val){
+            this.height = val;
+            return this;
+        }
+
+        public Builder unitPrice(int val){
+            this.unitPrice = val;
+            return this;
+        }
+
+        public Builder border(Border val){
+            this.border = val;
+            return this;
+        }
+
+        public InnerPanel build(){
+            final InnerPanel panel = new InnerPanel(width, height, unitPrice);
+            panel.border = this.border;
+            return panel;
+
+        }
+
+
     }
 
     public InnerPanel(double width, double height, int unitPrice) {
