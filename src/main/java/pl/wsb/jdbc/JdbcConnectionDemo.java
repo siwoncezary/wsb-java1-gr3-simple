@@ -16,9 +16,9 @@ public class JdbcConnectionDemo {
         statement.execute("drop table if exists players");
         boolean isResultSet = statement.execute("create table if not exists players  (id int primary key, name varchar(20), points int)");
         System.out.println("Cy jest result set? " + isResultSet);
-        int insertedRow = statement.executeUpdate("insert into players values(1, 'alan', 123)");
-        insertedRow += statement.executeUpdate("insert into players values(2, 'ewa', 156)");
-        insertedRow += statement.executeUpdate("insert into players values(3, 'karol', 56), (4, 'adam', 12)");
+        int insertedRow = statement.executeUpdate("insert into players values(1, 'alan', null)");
+        insertedRow += statement.executeUpdate("insert into players values(2, 'ewa', 123)");
+        insertedRow += statement.executeUpdate("insert into players values(3, 'karol', 0), (4, 'adam', 12)");
         int deletedRows = statement.executeUpdate("delete from players where id = 4");
         int updatedRows = statement.executeUpdate("update players set points = 100 where id = 2");
         System.out.println("Wstawionych wierszy: "+ insertedRow);
@@ -29,9 +29,14 @@ public class JdbcConnectionDemo {
             final int id = set.getInt("id");
             String name = set.getString("name");
             int points = set.getInt("points");
-            System.out.println(id + " " + name +" " + points);
+            //dla typu prostego, którego wartość w bazie możeby być null
+            //należy przetestować czy odczyt zwrócił wartość null
+            if (set.wasNull()){
+                System.out.println(id + " " + name +" null");
+            } else {
+                System.out.println(id + " " + name + " " + points);
+            }
         }
-        //set.beforeFirst();
         con.close();
         statement.close();
         set.close();
